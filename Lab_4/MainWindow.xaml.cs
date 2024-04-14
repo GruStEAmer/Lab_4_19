@@ -21,7 +21,6 @@ namespace Lab_4
     public partial class MainWindow : Window
     {
         private int
-            index_grass = 0,
             index_wall = 0;
 
         private bool 
@@ -36,7 +35,7 @@ namespace Lab_4
             InitializeComponent();
             Gen();
         }
-        private async void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
+        private1 void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
