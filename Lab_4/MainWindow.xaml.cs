@@ -35,7 +35,7 @@ namespace Lab_4
             InitializeComponent();
             Gen();
         }
-        private1 void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
