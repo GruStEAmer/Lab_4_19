@@ -21,12 +21,13 @@ namespace Lab_4
     public partial class MainWindow : Window
     {
         private int
-            index_wall = 0;
-
+            red_d_ang = 0,
+            blue_d_ang = 0;
         private bool 
             Winner = true;
         private
             List<TextBox> tlist = new List<TextBox>();
+
 
 
 
@@ -35,43 +36,43 @@ namespace Lab_4
             InitializeComponent();
             Gen();
         }
-        private void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
                 case Key.D:
-                    double x = 270, y = 500;
+                    double x = Canvas.GetLeft(Red) + (Red.Width - 10), y = Canvas.GetTop(Red) + 10;
                     Check_pulya(x, y);
 
                     break;
                 case Key.Left:
-                    double x_left = 715, y_left = 500;
-                    Check_pulya_left(x_left, y_left);
+                    double x_left = Canvas.GetLeft(Blue) + 10, y_left = Canvas.GetTop(Red) + 10;
+                    Check_pulya_right(x_left, y_left);
                     break;
                 case Key.W:
-                    MessageBox.Show("W");
+                    if(red_d_ang > -45) Red_d.RenderTransform = new RotateTransform(red_d_ang -= 15);
                     break;
                 case Key.S:
-                    MessageBox.Show("S");
+                    if(red_d_ang < 0) Red_d.RenderTransform = new RotateTransform(red_d_ang += 15);
                     break;
                 case Key.Up:
-                    MessageBox.Show(" Up");
+                    if (blue_d_ang < 45) Blue_d.RenderTransform = new RotateTransform(blue_d_ang += 15);
                     break;
                 case Key.Down:
-                    MessageBox.Show("Down");
+                    if (blue_d_ang > 0) Blue_d.RenderTransform = new RotateTransform(blue_d_ang -= 15);
                     break;
             }
         }
 
         private void Gen()
         {
-            for (int x = 0; x < 5; x++)
+            for (int y = 0; y < 15; y++)
             {
-                for (int y = 0; y < 15; y++)
+                for (int x = 0; x < 5; x++)
                 {
                     TextBox b = new TextBox
                     {
-                        Name = "wall" + index_wall.ToString(),
+                        Name = "wall" + x.ToString() + y.ToString(),
                         Background = new SolidColorBrush(Colors.RosyBrown),
                         IsReadOnly = true,
                         Width = 40,
@@ -95,7 +96,10 @@ namespace Lab_4
             {
                 Width = 20,
                 Height = 20,
-                Fill = new SolidColorBrush(Colors.Black)
+                Fill = new SolidColorBrush(Colors.Black),
+                RenderTransformOrigin = new Point(-3.7,0.5),
+                RenderTransform = new RotateTransform(red_d_ang)
+
             };
             Canvas.SetLeft(el_l, x);
             Canvas.SetTop(el_l, y);
@@ -104,19 +108,36 @@ namespace Lab_4
 
             for (int i = 0; i < 3000; i++)
             {
-                Canvas.SetLeft(el_l, x++);
+
+                switch (red_d_ang) {
+                    case 0:
+                        Canvas.SetLeft(el_l, x += 5);
+                        break;
+                    case -15:
+                        Canvas.SetLeft(el_l, x += 5);
+                        Canvas.SetTop(el_l,y -= 2.5);
+                        break;
+                    case -30:
+                        Canvas.SetLeft(el_l, x += 5);
+                        Canvas.SetTop(el_l, y -= 3.5);
+                        break;
+                    case -45:
+                        Canvas.SetLeft(el_l, x += 5);
+                        Canvas.SetTop(el_l, y -= 5);
+                        break;
+                }
                 await Task.Delay(1);
 
                 foreach (TextBox t in tlist)
                 {
                     if (
-                        (x + 20 > Canvas.GetLeft(t)) &&
+                        (x + 20 > Canvas.GetLeft(t) && (x-20 < Canvas.GetLeft(t) + 40 && x< Canvas.GetLeft(t) + 40)) &&
                         ((y > Canvas.GetTop(t)) && (y < (Canvas.GetTop(t) + 39))) ||
 
-                        (x + 20 > Canvas.GetLeft(t)) &&
+                        (x + 20 > Canvas.GetLeft(t) && (x - 20 < Canvas.GetLeft(t) + 40 && x < Canvas.GetLeft(t) + 40)) &&
                         (((y + 20) > Canvas.GetTop(t)) && ((y + 20) < (Canvas.GetTop(t) + 39))) ||
 
-                        (x + 20 > Canvas.GetLeft(t)) &&
+                        (x + 20 > Canvas.GetLeft(t) && (x - 20 < Canvas.GetLeft(t) + 40 && x < Canvas.GetLeft(t) + 40)) &&
                         (((y - 20) > Canvas.GetTop(t)) && ((y - 20) < (Canvas.GetTop(t) + 39)))
                     )
                     {
@@ -143,13 +164,16 @@ namespace Lab_4
             }
 
         }
-        private async void Check_pulya_left(double x, double y)
+
+        private async void Check_pulya_right(double x, double y)
         {
             Ellipse el_l = new Ellipse
             {
                 Width = 20,
                 Height = 20,
-                Fill = new SolidColorBrush(Colors.Black)
+                Fill = new SolidColorBrush(Colors.Black),
+                RenderTransformOrigin = new Point(3.7, 0.5),
+                RenderTransform = new RotateTransform(blue_d_ang)
             };
             Canvas.SetLeft(el_l, x);
             Canvas.SetTop(el_l, y);
@@ -158,8 +182,26 @@ namespace Lab_4
 
             for (int i = 0; i < 3000; i++)
             {
-                Canvas.SetLeft(el_l, x--);
                 await Task.Delay(1);
+
+                switch (blue_d_ang)
+                {
+                    case 0:
+                        Canvas.SetLeft(el_l, x -= 5);
+                        break;
+                    case 15:
+                        Canvas.SetLeft(el_l, x -= 5);
+                        Canvas.SetTop(el_l, y -= 2.5);
+                        break;
+                    case 30:
+                        Canvas.SetLeft(el_l, x -= 5);
+                        Canvas.SetTop(el_l, y -= 3.5);
+                        break;
+                    case 45:
+                        Canvas.SetLeft(el_l, x -= 5);
+                        Canvas.SetTop(el_l, y -= 5);
+                        break;
+                }
 
                 foreach (TextBox t in tlist)
                 {
@@ -167,7 +209,7 @@ namespace Lab_4
                         (x - 40 < Canvas.GetLeft(t)) &&
                         ((y > Canvas.GetTop(t)) && (y < (Canvas.GetTop(t) + 39))) ||
 
-                        (x - 40 < Canvas.GetLeft(t)) &&
+                       (x - 40 < Canvas.GetLeft(t)) &&
                         (((y + 20) > Canvas.GetTop(t)) && ((y + 20) < (Canvas.GetTop(t) + 39))) ||
 
                         (x - 40 < Canvas.GetLeft(t)) &&
